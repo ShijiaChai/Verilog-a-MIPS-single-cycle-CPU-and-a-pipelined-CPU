@@ -1,0 +1,21 @@
+module RegFile (reset,clk,addr1,data1,addr2,data2,wr,addr3,data3);
+input reset,clk;
+input wr;
+input [4:0] addr1,addr2,addr3;
+output [31:0] data1,data2;
+input [31:0] data3;
+wire [31:0] data11,data22;
+reg [31:0] RF_DATA[31:1];
+integer i;
+assign data1=(addr1==5'b0)?32'b0:RF_DATA[addr1];
+assign data2=(addr2==5'b0)?32'b0:RF_DATA[addr2];
+always@(negedge reset or negedge clk) begin
+	if(~reset) begin
+		for(i=1;i<32;i=i+1) RF_DATA[i]<=32'b0;
+		RF_DATA[29]<=32'd256;
+	end
+	else begin
+		if(wr && addr3) RF_DATA[addr3] <= data3;
+	end
+end
+endmodule
